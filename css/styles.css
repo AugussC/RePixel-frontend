@@ -160,7 +160,7 @@ body {
 }
 
 .gallery-box {
-    background-color: #715f79;
+    background-color: #8a7fd1;
     border-radius: 12px;
     padding: 20px 30px;
     max-width: 1000px;
@@ -224,13 +224,40 @@ p {
     margin-bottom: 10px;
 }
 
+.result-box {
+    background-color: #8c7fe1; 
+    padding: 30px;
+    border-radius: 8px;
+    display: inline-block; 
+}
+
+.img-preview {
+    max-width: 100%; 
+    height: auto;    
+    display: block;
+    margin: 0 auto 20px auto; 
+}
+
+.btn-custom {
+    background-color: #43378b;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.btn-custom:hover {
+    background-color: #5b4bb6;
+}
+        
+
 .login-body {
-    background-color: #6a4fb3; 
+    background-color: #453770; 
     font-family: 'Segoe UI', sans-serif;
 }
 
 .login-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: #8a7fd1;
     backdrop-filter: blur(10px);
     border-radius: 20px;
     width: 100%;
