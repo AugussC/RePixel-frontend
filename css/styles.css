@@ -1,4 +1,4 @@
-body {
+.body {
     background-color: #453770; 
     color: white;
 }
@@ -16,6 +16,19 @@ body {
     color: #d8b4fe;
 }
 
+.custom-footer {
+    background-color: #2c2347;
+}
+
+.footer-link {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
 
 .hero {
     position: relative;
@@ -147,7 +160,7 @@ body {
 }
 
 .register-section {
-    background: #4a3c7a;
+    background: #453770;
     min-height: 100vh;
 }
 
