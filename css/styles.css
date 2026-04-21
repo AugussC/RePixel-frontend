@@ -1,10 +1,10 @@
 body {
-    background-color: #6a0dad; 
+    background-color: #4a3c7a; 
     color: white;
 }
 
 .navbar-custom {
-    background-color: #4b0082; 
+    background-color: #4a3c7a; 
 }
 
 .navbar-custom .navbar-brand,
@@ -72,38 +72,76 @@ body {
     color: white;
 }
 
-.upload-section {
-    background-color: #682f92; 
-    padding: 100px 0;
+.problem-section {
+    background: linear-gradient(180deg, #5b4b8a, #4a3c7a);
+}
+
+.problem-text {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.problem-card {
+    background: #4a3c7a;
+    padding: 25px 15px;
+    border-radius: 15px;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.problem-card:hover {
+    transform: translateY(-5px);
+}
+
+.problem-card h5 {
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.problem-card p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.icon-circle {
+    width: 55px;
+    height: 55px;
+    background: #6b5ca5;
+    border-radius: 50%;
     display: flex;
-    justify-content: center;
     align-items: center;
-}
-
-.upload-box {
-    background-color: #7a6fc2;
-    padding: 40px;
-    border-radius: 10px;
-    width: 300px;
-    color: white;
-}
-
-.upload-title {
-    font-weight: bold;
-    margin-bottom: 0;
-}
-
-.upload-subtitle {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.upload-icons {
-    background-color: #5e5494;
-    margin-top: 15px;
-    padding: 15px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    margin: 0 auto 10px;
     font-size: 24px;
+}
+
+.scope-section {
+    background: linear-gradient(180deg, #6a5acd, #5b4b8a);
+}
+
+.scope-text {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.scope-card {
+    background: #4a3c7a;
+    padding: 30px 25px;
+    border-radius: 20px;
+    text-align: left;
+    height: 100%;
+}
+
+.scope-card ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.scope-card li {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
 }

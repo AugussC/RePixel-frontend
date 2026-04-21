@@ -4,5 +4,5 @@ async function cargarHTML(id, archivo) {
     document.getElementById(id).innerHTML = html;
 }
 
-cargarHTML("navbar", "./navbar.html");
-cargarHTML("footer", "./footer.html");
+cargarHTML("navbar", "../js/components/navbar.html");
+cargarHTML("footer", "../js/components/footer.html");;
