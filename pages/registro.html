@@ -7,44 +7,52 @@
 
 <body>
     <div id="navbar"></div>
-    <div class="container-fluid py-5 mt-5"> 
-            <div class= "container-fluid register"> 
-                <div class="row d-flex justify-content-center"> 
-                    <div class="card col-md-4 col-lg-3 custom-register-card shadow-lg" style="width: 80%;" > 
-                        <div class="card-body">
-                            <h1>Registrarse</h1> 
-                            <div class="mb-3"> 
-                                <label for="exampleFormControlInput1" class="form-label">Nombre</label> 
-                                <input name="nombre" type="text" class="form-control" placeholder="nombre" > 
-                            </div> 
+    <div class="container-fluid register-section py-5">
+    <div class="d-flex justify-content-center">
 
-                            <div class="mb-3"> 
-                                <label for="exampleFormControlInput1" class="form-label">Apellido</label> 
-                                <input name="apellido" type="text" class="form-control" placeholder="apellido" > 
-                            </div>
+        <div class="register-card p-4">
 
-                            <div class="mb-3"> 
-                                <label for="exampleFormControlInput1" class="form-label">Nombre de Usuario</label> 
-                                <input name="usuario" type="text" class="form-control" placeholder="usuario" > 
-                            </div>
+            <h2 class="text-center mb-2">Crear Cuenta</h2>
+            <p class="text-center mb-4">Regístrate para comenzar a mejorar tus imágenes</p>
 
-                            <div class="mb-3"> 
-                                <label for="exampleFormControlInput1" class="form-label">Email</label> 
-                                <input name="email" type="text" class="form-control" placeholder="email" > 
-                            </div>
-
-                            <div class="mb-3"> 
-                                <label class="form-label">Contraseña</label> 
-                                <input name="pass" type="password" class="form-control" placeholder="contraseña"> 
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-                        </div>
+            <form>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label>Apellido</label>
+                        <input type="text" class="form-control">
                     </div>
                 </div>
-            </div>
+
+                <div class="mb-3">
+                    <label>Correo electrónico</label>
+                    <input type="email" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label>Contraseña</label>
+                    <input type="password" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" class="form-control">
+                </div>
+
+                <button class="btn btn-register w-100">Registrarse</button>
+
+                <p class="text-center mt-3 small">
+                    ¿Ya tienes cuenta? 
+                    <a href="/pages/login.html">Inicia sesión</a>
+                </p>
+            </form>
+
         </div>
     </div>
-    
+</div>    
     <div id="footer"></div>
     <script src="../js/components/layout.js"></script>
 </body>

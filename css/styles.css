@@ -1,5 +1,5 @@
 body {
-    background-color: #4a3c7a; 
+    background-color: #453770; 
     color: white;
 }
 
@@ -144,4 +144,44 @@ body {
 .scope-card li {
     margin-bottom: 10px;
     font-size: 0.9rem;
+}
+
+.register-section {
+    background: #4a3c7a;
+    min-height: 100vh;
+}
+
+.register-card {
+    background: linear-gradient(180deg, #8a7fd1, #6f63c2);
+    border-radius: 20px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.register-card h2 {
+    font-weight: bold;
+}
+
+.register-card input {
+    border-radius: 8px;
+    border: none;
+    padding: 10px;
+}
+
+.btn-register {
+    background-color: #4a3c7a;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+}
+
+.btn-register:hover {
+    background-color: #3a2f63;
+}
+
+.register-card a {
+    color: #00e0ff;
+    text-decoration: none;
 }
