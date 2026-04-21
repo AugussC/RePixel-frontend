@@ -8,18 +8,33 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item me-2">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <!-- Links visibles siempre -->
+                <li class="nav-item me-2 with-user">
                     <a class="btn btn-outline-dark" href="/pages/galeria_imagenes.html">Mis Archivos</a>
                 </li>
-                <li class="nav-item me-2">
-                    <a class="btn btn-outline-dark" href="/pages/imagen_procesada.html">Procesar</a>
+                <li class="nav-item me-2 with-user">
+                    <a class="btn btn-outline-dark" href="/pages/inicio.html">Procesar</a>
                 </li>
-                <li class="nav-item me-2">
+                <li class="nav-item me-2 no-user">
+                    <a class="btn btn-outline-dark" href="/pages/imagen_procesada.html">Ejemplo</a>
+                </li>
+                <!-- Solo si NO hay usuario -->
+                <li class="nav-item me-2 no-user">
                     <a class="btn btn-outline-dark" href="/pages/login.html">Iniciar Sesión</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item me-2 no-user">
                     <a class="btn btn-outline-dark" href="/pages/registro.html">Registrar</a>
+                </li>
+
+                <!-- Solo si HAY usuario -->
+                <li class="nav-item me-2 with-user" style="display:none;">
+                    <div class ="d-flex align-items-center flex-block">
+                    <span class="badge bg-primary" id="userBadge"></span>
+                    </div>
+                </li>
+                <li class="nav-item with-user" style="display:none;">
+                    <button class="btn btn-outline-danger" id="btnLogout">Cerrar Sesión</button>
                 </li>
             </ul>
         </div>
