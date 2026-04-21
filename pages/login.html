@@ -20,21 +20,20 @@
             <p class="text-light small mb-4">
                 Ingresa tus credenciales para acceder
             </p>
-            <form>
+            <form id="loginForm">
                 <div class="mb-3 text-start">
                     <label class="form-label">Correo electrónico</label>
-                    <input type="email" class="form-control input-custom">
+                    <input type="email" id="correo" class="form-control input-custom">
+                    <small id="errorCorreo" class="text-danger"></small>
                 </div>
                 <div class="mb-3 text-start">
                     <label class="form-label">Contraseña</label>
                     <div class="input-group">
-                        <input type="password" class="form-control input-custom">
-                        <span class="input-group-text bg-white">
-                            👁️
-                        </span>
+                        <input type="password" id="contraseña" class="form-control input-custom">
                     </div>
+                    <small id="errorContraseña" class="text-danger"></small>
                 </div>
-                <button class="btn btn-custom w-100 mb-3">
+                 <button type="submit" class="btn btn-custom w-100 mb-3">
                     Iniciar Sesión
                 </button>
                 <p class="small">
@@ -46,5 +45,12 @@
     </section>
 
     <div id="footer"></div>
+    <script type="module">
+        import { initLoginForm } from "../js/main.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initLoginForm();
+        });
+        </script>
     <script src="../js/components/layout.js"></script>
 </body>

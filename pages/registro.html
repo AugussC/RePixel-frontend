@@ -15,44 +15,55 @@
             <h2 class="text-center mb-2">Crear Cuenta</h2>
             <p class="text-center mb-4">Regístrate para comenzar a mejorar tus imágenes</p>
 
-            <form>
+            <form id="registerForm">
                 <div class="row mb-3">
                     <div class="col">
                         <label>Nombre</label>
-                        <input type="text" class="form-control">
+                        <input type="text" id="nombre" class="form-control" required>
+                        <small id="errorNombre" class="text-danger"></small>
                     </div>
                     <div class="col">
                         <label>Apellido</label>
-                        <input type="text" class="form-control">
+                        <input type="text" id="apellido" class="form-control" required>
+                        <small id="errorApellido" class="text-danger"></small>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label>Correo electrónico</label>
-                    <input type="email" class="form-control">
+                    <input type="email" id="correo" class="form-control" required>
+                    <small id="errorCorreo" class="text-danger"></small>
                 </div>
 
                 <div class="mb-3">
                     <label>Contraseña</label>
-                    <input type="password" class="form-control">
+                    <input type="password" id="contraseña" class="form-control" required>
+                    <small id="errorContraseña" class="text-danger"></small>
                 </div>
 
                 <div class="mb-3">
                     <label>Confirmar Contraseña</label>
-                    <input type="password" class="form-control">
+                    <input type="password" id="confirmarContraseña" class="form-control" required>
+                    <small id="errorConfirmarContraseña" class="text-danger"></small>
                 </div>
 
-                <button class="btn btn-register w-100">Registrarse</button>
-
-                <p class="text-center mt-3 small">
+                <button type="submit" class="btn btn-register w-100">Registrarse</button>
+            </form>
+            <p class="text-center mt-3 small">
                     ¿Ya tienes cuenta? 
                     <a href="/pages/login.html">Inicia sesión</a>
                 </p>
-            </form>
 
         </div>
     </div>
 </div>    
     <div id="footer"></div>
+    <script type="module">
+    import { initRegisterForm } from "../js/main.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initRegisterForm();
+    });
+    </script>
     <script src="../js/components/layout.js"></script>
 </body>
