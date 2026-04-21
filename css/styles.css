@@ -1,4 +1,4 @@
-.body {
+body {
     background-color: #453770; 
     color: white;
 }
@@ -158,6 +158,72 @@
     margin-bottom: 10px;
     font-size: 0.9rem;
 }
+
+.gallery-box {
+    background-color: #715f79;
+    border-radius: 12px;
+    padding: 20px 30px;
+    max-width: 1000px;
+    width: 95%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.file-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.file-name {
+    flex: 2; 
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-info {
+    flex: 1; 
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.file-actions {
+    flex: 1; 
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.btn-custom {
+    background-color: #43378b;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.btn-custom:hover {
+    background-color: #5b4bb6;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
 
 .register-section {
     background: #453770;
