@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('btnLogout').addEventListener('click', async () => {
             await fetch('http://127.0.0.1:5000/logout', { method: 'POST', credentials:'include' });
-            window.location.reload();
+            window.location.href = "../pages/index.html";
         });
 
     } else {
