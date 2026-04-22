@@ -45,16 +45,13 @@ const fileInput = document.getElementById('fileInput');
 const statusMessage = document.getElementById('status-message');
 
 let img = new Image();
-
-// --- Lógica del Canvas (Zoom y Dibujo) ---
 function draw() {
     if (!img.complete || !img.src) return;
     canvas.width = img.width * scale;
     canvas.height = img.height * scale;
-    ctx.imageSmoothingEnabled = false; // Mantiene el estilo pixelado al hacer zoom
+    ctx.imageSmoothingEnabled = false;
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    // Dibujar grilla si el zoom es alto
     if (scale > 5) {
         ctx.beginPath();
         ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
@@ -71,7 +68,6 @@ function draw() {
     }
 }
 
-// Eventos de Zoom
 zoomSlider.addEventListener('input', () => {
     scale = parseFloat(zoomSlider.value);
     draw();
@@ -85,30 +81,26 @@ viewer.addEventListener('wheel', (e) => {
     draw();
 });
 
-// Función para cargar imagen en el visor
 function mostrarImagen(src) {
     img.src = src;
     img.onload = () => {
-        scale = 1; // Resetear zoom al cargar nueva
+        scale = 1; 
         zoomSlider.value = 1;
         draw();
     };
 }
 
-// --- Manejo de Subida de Archivo ---
 fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validación rápida
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
     if (!allowedTypes.includes(file.type)) {
         alert("Solo se permiten archivos PNG o JPG");
         return;
     }
 
-    // Validación de tamaño (5 MB máximo)
-    const maxSize = 5 * 1024 * 1024; // 5 MB en bytes
+    const maxSize = 5 * 1024 * 1024; 
     if (file.size > maxSize) {
         alert("El archivo no puede superar los 5 MB");
         return;
@@ -131,8 +123,7 @@ fileInput.addEventListener('change', async (e) => {
         if (res.ok) {
             statusMessage.innerHTML = `<span class="text-success">¡Imagen subida con éxito!</span>`;
             currentImageId = data.id;  
-            
-            // Cargamos la imagen desde el backend al canvas
+
             mostrarImagen(`http://127.0.0.1:5000/images/${currentImageId}/view`);
         } else {
             statusMessage.innerHTML = `<span class="text-danger">Error: ${data.error}</span>`;
