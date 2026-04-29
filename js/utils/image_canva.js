@@ -49,8 +49,16 @@ export const initCanvas = (canvasId, viewerId, zoomSliderId) => {
     });
 
     return {
-        mostrarImagen: (src) => {
-            img.src = src;
+        mostrarImagen: async (src) => {
+            const res = await fetch(src, {
+                credentials: "include"
+            });
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+
+            img.src = url;
+
             img.onload = () => {
                 scale = 1;
                 zoomSlider.value = 1;
