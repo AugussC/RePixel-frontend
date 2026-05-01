@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fileInput = document.getElementById("fileInput");
     const statusMessage = document.getElementById("status-message");
+    const bloqueInicial = document.getElementById("bloque-inicial");
 
     const canvasManager = initCanvas("canvas", "viewer", "zoom");
 
@@ -25,6 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             statusMessage.innerText = "Imagen subida!";
+¿
+            bloqueInicial.style.display = "none";
+
         } else {
             statusMessage.innerText = data.error;
         }

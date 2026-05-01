@@ -10,21 +10,22 @@
 <body>
     <div id="navbar"></div>
     <div class="container-subida">
-        <h1>Mejore sus imágenes</h1>
-        <p>Mejore sus imágenes en pocos pasos y note la diferencia</p>
-        <div class="upload-container">
-            <label class="upload-box" for="fileInput" style="cursor: pointer;">
-                <div class="icon">
-                    <i class="bi bi-laptop"></i>
-                    <i class="bi bi-box-seam"></i>
-                    <i class="bi bi-google"></i>
-                </div>
-                <span>Suelte los archivos aquí</span>
-                <small>PNG, JPG, JPEG</small>
-                <input type="file" id="fileInput" accept=".png, .jpg, .jpeg" hidden>
-            </label>
-
-            <div id="status-message"></div>
+        <div id="bloque-inicial">
+            <h1>Mejore sus imágenes</h1>
+            <p>Mejore sus imágenes en pocos pasos y note la diferencia</p>
+            <div class="upload-container">
+                <label class="upload-box" for="fileInput" style="cursor: pointer;">
+                    <div class="icon">
+                        <i class="bi bi-laptop"></i>
+                        <i class="bi bi-box-seam"></i>
+                        <i class="bi bi-google"></i>
+                    </div>
+                    <span>Suelte los archivos aquí</span>
+                    <small>PNG, JPG, JPEG</small>
+                    <input type="file" id="fileInput" accept=".png, .jpg, .jpeg" hidden>
+                </label>
+                <div id="status-message"></div>
+            </div>
         </div>
         <h3>Ver Imagen</h3>
         <div id="viewer">
