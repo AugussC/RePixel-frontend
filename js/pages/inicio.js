@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             statusMessage.innerText = "Imagen subida!";
-¿
             bloqueInicial.style.display = "none";
 
         } else {
