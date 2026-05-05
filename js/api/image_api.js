@@ -17,3 +17,9 @@ export async function subirImagen(file) {
 export function getImageUrl(id) {
     return `${API_URL}/images/${id}/view`;
 }
+
+export async function obtener_tipoImagen() {
+    const res = await fetch(`${API_URL}/images/tipos-imagen`);
+    if (!res.ok) throw new Error("Error al obtener tipos");
+    return await res.json();
+}

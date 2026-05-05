@@ -1,21 +1,55 @@
-import { subirImagen, getImageUrl } from "../api/image_api.js";
+import { subirImagen, getImageUrl, obtener_tipoImagen } from "../api/image_api.js";
 import { initCanvas } from "../utils/image_canva.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-
     let currentImageId = null;
+    let tiposPermitidos = [];
 
     const fileInput = document.getElementById("fileInput");
     const statusMessage = document.getElementById("status-message");
     const bloqueInicial = document.getElementById("bloque-inicial");
+    const textoTipos = document.getElementById("tipos-texto");
 
     const canvasManager = initCanvas("canvas", "viewer", "zoom");
 
-    fileInput.addEventListener("change", async (e) => {
+    async function cargarTiposImagen() {
+        try {
+            // Revisa si tu backend usa /imagen/tipos-imagen o solo /tipos-imagen
+            const tipos = await obtener_tipoImagen(); 
+            tiposPermitidos = tipos;
 
+            const extensiones = tipos.map(t => "." + t.nombre_tipoimagen.toLowerCase());
+            fileInput.setAttribute("accept", extensiones.join(","));
+
+            if (textoTipos) {
+                textoTipos.innerText = "Formatos: " + tipos
+                    .map(t => t.nombre_tipoimagen.toUpperCase())
+                    .join(", ");
+            }
+
+        } catch (err) {
+            console.error("Error cargando tipos:", err);
+        }
+    }
+    cargarTiposImagen();
+
+    function validarArchivo(file) {
+        const extension = file.name.split(".").pop().toLowerCase();
+        return tiposPermitidos.some(
+            t => t.nombre_tipoimagen.toLowerCase() === extension
+        );
+    }
+
+    fileInput.addEventListener("change", async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
+        if (!validarArchivo(file)) {
+            statusMessage.innerText = "Tipo de archivo no permitido";
+            fileInput.value = "";
+            return;
+        }
+        
         const { status, data } = await subirImagen(file);
 
         if (status === 200) {
