@@ -27,13 +27,83 @@
                 <div id="status-message"></div>
             </div>
         </div>
-        <h3>Ver Imagen</h3>
+        <div id="editor-section" class="editor-layout" style="display: none;">
+
+    <!-- VISOR -->
+    <div class="editor-viewer">
+
+        <div class="viewer-header">
+          <!--   <button class="btn btn-custom" id="btnNuevaImagen">
+                Nueva Imagen
+            </button>-->
+        </div>
+
         <div id="viewer">
             <canvas id="canvas"></canvas>
         </div>
-        <br>
-        Zoom:
-        <input type="range" min="1" max="11" step="0.1" value="1" id="zoom">
+
+        <div class="zoom-container">
+            <label>Zoom</label>
+
+            <input
+                type="range"
+                min="1"
+                max="11"
+                step="0.1"
+                value="1"
+                id="zoom"
+            >
+        </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="tools-sidebar">
+
+        <h4>Herramientas</h4>
+        <p class="tool-subtitle">
+            Selecciona una herramienta para mejorar tu imagen
+        </p>
+
+        <button class="tool-btn">
+            <i class="bi bi-magic"></i>
+
+            <div>
+                <span>Mejorar Calidad</span>
+                <small>Mejora automática</small>
+            </div>
+        </button>
+
+        <button class="tool-btn">
+            <i class="bi bi-brightness-high"></i>
+
+            <div>
+                <span>Ajustar Brillo</span>
+                <small>Corregir iluminación</small>
+            </div>
+        </button>
+
+        <button class="tool-btn">
+            <i class="bi bi-camera"></i>
+
+            <div>
+                <span>Enfocar</span>
+                <small>Reducir desenfoque</small>
+            </div>
+        </button>
+
+        <button class="tool-btn">
+            <i class="bi bi-arrow-clockwise"></i>
+
+            <div>
+                <span>Restaurar imagen</span>
+                <small>Recuperar detalles de la imagen</small>
+            </div>
+        </button>
+
+    </div>
+
+</div>
     </div>
     <div id="footer"></div>
 

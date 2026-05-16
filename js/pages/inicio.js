@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             statusMessage.innerText = "Imagen subida!";
             bloqueInicial.style.display = "none";
+            document.getElementById("editor-section").style.display = "flex";
 
         } else {
             statusMessage.innerText = data.error;
