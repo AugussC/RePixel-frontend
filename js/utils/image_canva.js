@@ -10,25 +10,50 @@ export const initCanvas = (canvasId, viewerId, zoomSliderId) => {
     const draw = () => {
         if (!img.complete || !img.src) return;
 
-        canvas.width = img.width * scale;
-        canvas.height = img.height * scale;
+        const viewerWidth = viewer.clientWidth;
+        const viewerHeight = viewer.clientHeight;
+
+        // escala para adaptar imagen al viewer
+        const fitScale = Math.min(
+            viewerWidth / img.width,
+            viewerHeight / img.height
+        );
+
+        // escala final con zoom
+        const finalScale = fitScale * scale;
+
+        const drawWidth = img.width * finalScale;
+        const drawHeight = img.height * finalScale;
+
+        canvas.width = drawWidth;
+        canvas.height = drawHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        if (scale > 5) {
+        ctx.drawImage(
+            img,
+            0,
+            0,
+            drawWidth,
+            drawHeight
+        );
+
+        // grilla pixel art
+        if (finalScale > 5) {
             ctx.beginPath();
             ctx.strokeStyle = "rgba(255,255,255,0.3)";
             ctx.lineWidth = 1;
 
             for (let x = 0; x <= img.width; x++) {
-                ctx.moveTo(x * scale, 0);
-                ctx.lineTo(x * scale, canvas.height);
+                ctx.moveTo(x * finalScale, 0);
+                ctx.lineTo(x * finalScale, canvas.height);
             }
 
             for (let y = 0; y <= img.height; y++) {
-                ctx.moveTo(0, y * scale);
-                ctx.lineTo(canvas.width, y * scale);
+                ctx.moveTo(0, y * finalScale);
+                ctx.lineTo(canvas.width, y * finalScale);
             }
 
             ctx.stroke();
