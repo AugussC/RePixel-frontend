@@ -11,7 +11,11 @@ export async function subirImagen(file) {
     });
 
     const data = await res.json();
-    return { status: res.status, data };
+
+    return {
+        status: res.status,
+        data
+    };
 }
 
 export function getImageUrl(id) {
@@ -20,6 +24,33 @@ export function getImageUrl(id) {
 
 export async function obtener_tipoImagen() {
     const res = await fetch(`${API_URL}/images/tipos-imagen`);
-    if (!res.ok) throw new Error("Error al obtener tipos");
+
+    if (!res.ok) {
+        throw new Error("Error al obtener tipos");
+    }
+
     return await res.json();
+}
+
+export async function procesarImagen(idImagen, algoritmo) {
+    const res = await fetch(
+        `${API_URL}/images/procesar-imagen/${idImagen}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                algoritmo
+            })
+        }
+    );
+
+    const data = await res.json();
+
+    return {
+        status: res.status,
+        data
+    };
 }
