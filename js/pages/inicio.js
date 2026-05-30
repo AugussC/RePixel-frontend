@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusMessage = document.getElementById("status-message");
     const bloqueInicial = document.getElementById("bloque-inicial");
     const textoTipos = document.getElementById("tipos-texto");
+    const btnNuevaImagen = document.getElementById("btnNuevaImagen");
 
     const canvasManager = initCanvas("canvas", "viewer", "zoom");
 
     async function cargarTiposImagen() {
         try {
-            // Revisa si tu backend usa /imagen/tipos-imagen o solo /tipos-imagen
             const tipos = await obtener_tipoImagen(); 
             tiposPermitidos = tipos;
 
@@ -39,6 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
             t => t.nombre_tipoimagen.toLowerCase() === extension
         );
     }
+
+    btnNuevaImagen.addEventListener("click", () => {
+        fileInput.click();
+    });
 
     fileInput.addEventListener("change", async (e) => {
         const file = e.target.files[0];
