@@ -33,16 +33,17 @@
                     <button class="btn btn-custom" id="btnNuevaImagen">
                         <i class="bi bi-upload"></i> Nueva Imagen
                     </button>
-                    <button class="btn btn-warning" id="btnReiniciar">
+                    <button class="btn btn-custom" id="btnReiniciar">
                         <i class="bi bi-arrow-counterclockwise"></i> Reiniciar
                     </button>
-                    <button class="btn btn-success" id="btnDescargar">
+                    <button class="btn btn-custom" id="btnDescargar">
                         <i class="bi bi-download"></i> Descargar
                     </button>
                 </div>
 
                 <div class="viewer-content d-flex justify-content-center align-items-center gap-3">
                     <div class="canvas-panel">
+                        <h5 class="text-light fw-bold text-center">Imagen Original</h5>
                         <div id="viewer-original" class="viewer">
                             <canvas id="canvas-original"></canvas>
                         </div>
@@ -54,6 +55,7 @@
 
 
                     <div class="canvas-panel d-none" id="panel-resultado">
+                        <h5 class="text-light fw-bold text-center">Imagen Procesada</h5>
                         <div id="viewer-resultado" class="viewer">
                             <canvas id="canvas-resultado"></canvas>
                         </div>

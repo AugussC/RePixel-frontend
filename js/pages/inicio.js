@@ -84,13 +84,38 @@ document.addEventListener("DOMContentLoaded", () => {
  
     cargarTiposImagen();
  
-    // ── validar archivo ───────────────────────────────────────────────────────
     function validarArchivo(file) {
         const ext = file.name.split(".").pop().toLowerCase();
         return tiposPermitidos.some(
             t => t.nombre_tipoimagen.toLowerCase() === ext
         );
     }
+
+    function restaurarModoEdicion() {
+
+    canvasResultado.limpiar();
+
+    const panelResultado =
+        document.getElementById("panel-resultado");
+
+    if (panelResultado) {
+        panelResultado.classList.add("d-none");
+    }
+
+    const sidebar =
+        document.querySelector(".tools-sidebar");
+
+    if (sidebar) {
+        sidebar.style.display = "block";
+    }
+
+    const editorViewer =
+        document.querySelector(".editor-viewer");
+
+    if (editorViewer) {
+        editorViewer.style.width = "70%";
+    }
+}
 
     async function ejecutarProceso(algoritmo) {
         if (!currentImageId) {
@@ -114,13 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // 1. Hacemos visible el panel de resultado quitando 'd-none'
                 const panelResultado = document.getElementById("panel-resultado");
                 if (panelResultado) {
                     panelResultado.classList.remove("d-none");
                 }
 
-                // 1b. Ocultamos la barra lateral de herramientas y expandimos el visor al 100%
                 const sidebar = document.querySelector(".tools-sidebar");
                 if (sidebar) {
                     sidebar.style.display = "none";
@@ -130,11 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     editorViewer.style.width = "100%";
                 }
 
-                // 2. Obtenemos la URL del procesamiento
                 const resultadoUrl = getProcesamientoUrl(idProcesamiento);
 
-                // 3. Renderizamos la imagen en el canvas resultado con un pequeño delay
-                // para asegurar que las dimensiones de Bootstrap se hayan estabilizado en el DOM.
                 requestAnimationFrame(() => {
                     setTimeout(async () => {
                         try {
@@ -156,28 +176,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    btnNuevaImagen
-    .addEventListener(
-        "click",
-        ()=>{
+    btnNuevaImagen.addEventListener("click", () => {
+
+            restaurarModoEdicion();
 
             fileInput.click();
-
-        }
-    );
+        });
 
     fileInput.addEventListener("change", async (e) => {
         const file = e.target.files[0];
         if (!file) return;
  
-        // Limpiar el input para que se pueda volver a seleccionar el mismo archivo
         fileInput.value = "";
  
         if (!validarArchivo(file)) {
             statusMessage.innerText = "Tipo de archivo no permitido";
             return;
         }
- 
+        
+        restaurarModoEdicion();
+
         statusMessage.innerText = "Subiendo imagen...";
  
         const { status, data } = await subirImagen(file);
@@ -203,26 +221,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ── acción reiniciar ─────────────────────────────────────────────────────
     btnReiniciar?.addEventListener("click", () => {
-        // 1. Limpiamos y ocultamos el canvas de la derecha
-        canvasResultado.limpiar();
-        const panelResultado = document.getElementById("panel-resultado");
-        if (panelResultado) {
-            panelResultado.classList.add("d-none");
-        }
-
-        // 2. Volvemos a mostrar la barra de herramientas y restauramos el ancho del visor
-        const sidebar = document.querySelector(".tools-sidebar");
-        if (sidebar) {
-            sidebar.style.display = "block"; // O "flex", dependiendo de tus estilos CSS
-        }
-        const editorViewer = document.querySelector(".editor-viewer");
-        if (editorViewer) {
-            editorViewer.style.width = "70%";
-        }
-
-        // 3. Reseteamos la vista del canvas original por comodidad
+        
+        restaurarModoEdicion();
+    
         canvasOriginal.resetVista();
         statusMessage.innerText = "Editor reiniciado";
     });
