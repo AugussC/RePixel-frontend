@@ -54,3 +54,6 @@ export async function procesarImagen(idImagen, algoritmo) {
         data
     };
 }
+export function getProcesamientoUrl(idProcesamiento) {
+    return `${API_URL}/images/procesamientos/${idProcesamiento}/view`;
+}
