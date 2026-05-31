@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const images = await response.json();
 
-        console.log(images);
+console.log("IMAGES:", images);
 
         const galleryContainer = document.getElementById("gallery-container");
 
@@ -66,50 +66,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         // RENDERIZAR IMÁGENES
+images.forEach(img => {
+console.log(JSON.stringify(img, null, 2));
 
-        images.forEach(img => {
+    const imageId = img.id_image;
+    
+console.log("ID:", imageId);
 
-            const imageUrl = `${API_URL}/images/${img.id}/view`;
+    const imageUrl =
+        `${API_URL}/images/${imageId}/view`;
 
-            const extension = img.ruta
-                ? img.ruta.split(".").pop().toUpperCase()
-                : "IMG";
+    const extension = img.ruta
+        ? img.ruta.split(".").pop().toUpperCase()
+        : "IMG";
 
-            const row = document.createElement("div");
+    const row = document.createElement("div");
 
-            row.classList.add("file-row");
+    row.classList.add("file-row");
 
-            row.innerHTML = `
-                <div class="file-name">
-                    ${img.nombre_archivo || `Imagen ${img.id}`}
-                </div>
+    row.innerHTML = `
+        <div class="file-name">
+            ${img.nombre_archivo || `Imagen ${imageId}`}
+        </div>
 
-                <div class="file-info">
-                    ${extension}
-                </div>
+        <div class="file-info">
+            ${extension}
+        </div>
 
-                <div class="file-actions">
+        <div class="file-actions">
 
-                    <a 
-                        href="${imageUrl}" 
-                        download
-                        class="btn btn-download"
-                    >
-                        Descargar
-                    </a>
+            <a
+                href="${imageUrl}"
+                download
+                class="btn btn-download"
+            >
+                Descargar
+            </a>
 
-                    <button 
-                        type="button"
-                        class="btn-close"
-                        data-id="${img.id}"
-                        aria-label="Close"
-                    ></button>
+            <button
+                type="button"
+                class="btn-close"
+                data-id="${imageId}"
+                aria-label="Close"
+            ></button>
 
-                </div>
-            `;
+        </div>
+    `;
 
-            galleryContainer.appendChild(row);
-        });
+    galleryContainer.appendChild(row);
+});
 
         // BOTONES ELIMINAR
 
@@ -121,8 +126,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 try {
 
-                    const imageId = button.dataset.id;
+                   const imageId = button.dataset.id;
 
+                    console.log("Intentando eliminar imagen:", imageId);
+
+        
                     const response = await fetch(
                         `${API_URL}/images/${imageId}/disable`,
                         {
