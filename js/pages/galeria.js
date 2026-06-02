@@ -1,159 +1,54 @@
-const API_URL = "http://127.0.0.1:5000";
+import { obtenerUsuarioLogueado } from "../api/auth_api.js";
+import { obtenerImagenesUsuario, deshabilitarImagen } from "../api/image_api.js";
+import { crearFilaImagen, mostrarMensajeVacio } from "../utils/galeria_generarFila.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const galleryContainer = document.getElementById("gallery-container");
+    if (!galleryContainer) return;
 
+    // 1. CARGA INICIAL DE DATOS Y RENDERIZADO
     try {
-
-        let userId = null;
-
-        // OBTENER USUARIO LOGUEADO
-
-        try {
-
-            const res = await fetch(
-                `${API_URL}/me`,
-                {
-                    credentials: "include"
-                }
-            );
-
-            if (!res.ok) {
-                throw new Error("No se pudo obtener el usuario");
-            }
-
-            const user = await res.json();
-
-            userId = user.id;
-
-        } catch (err) {
-
-            console.error("Error obteniendo usuario:", err);
-            return;
-        }
-
-        // TRAER IMÁGENES DEL USUARIO
-
-        const response = await fetch(
-            `${API_URL}/users/${userId}/images`,
-            {
-                credentials: "include"
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error("Error obteniendo imágenes");
-        }
-
-        const images = await response.json();
-
-console.log("IMAGES:", images);
-
-        const galleryContainer = document.getElementById("gallery-container");
+        const user = await obtenerUsuarioLogueado();
+        const images = await obtenerImagenesUsuario(user.id);
 
         galleryContainer.innerHTML = "";
 
-        // SI NO HAY IMÁGENES
-
         if (images.length === 0) {
-
-            galleryContainer.innerHTML = `
-                <p class="text-center">
-                    No hay imágenes disponibles
-                </p>
-            `;
-
+            mostrarMensajeVacio(galleryContainer);
             return;
         }
 
-        // RENDERIZAR IMÁGENES
-images.forEach(img => {
-console.log(JSON.stringify(img, null, 2));
-
-    const imageId = img.id_image;
-    
-console.log("ID:", imageId);
-
-    const imageUrl =
-        `${API_URL}/images/${imageId}/view`;
-
-    const extension = img.ruta
-        ? img.ruta.split(".").pop().toUpperCase()
-        : "IMG";
-
-    const row = document.createElement("div");
-
-    row.classList.add("file-row");
-
-    row.innerHTML = `
-        <div class="file-name">
-            ${img.nombre_archivo || `Imagen ${imageId}`}
-        </div>
-
-        <div class="file-info">
-            ${extension}
-        </div>
-
-        <div class="file-actions">
-
-            <a
-                href="${imageUrl}"
-                download
-                class="btn btn-download"
-            >
-                Descargar
-            </a>
-
-            <button
-                type="button"
-                class="btn-close"
-                data-id="${imageId}"
-                aria-label="Close"
-            ></button>
-
-        </div>
-    `;
-
-    galleryContainer.appendChild(row);
-});
-
-        // BOTONES ELIMINAR
-
-        const deleteButtons = document.querySelectorAll(".btn-close");
-
-        deleteButtons.forEach(button => {
-
-            button.addEventListener("click", async () => {
-
-                try {
-
-                   const imageId = button.dataset.id;
-
-                    console.log("Intentando eliminar imagen:", imageId);
-
-        
-                    const response = await fetch(
-                        `${API_URL}/images/${imageId}/disable`,
-                        {
-                            method: "PATCH",
-                            credentials: "include"
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error("No se pudo eliminar");
-                    }
-
-                    button.closest(".file-row").remove();
-
-                } catch (error) {
-
-                    console.error("Error eliminando imagen:", error);
-                }
-            });
+        images.forEach(img => {
+            const fila = crearFilaImagen(img);
+            galleryContainer.appendChild(fila);
         });
 
     } catch (error) {
-
         console.error("Error cargando galería:", error);
     }
+
+    // 2. DELEGACIÓN DE EVENTOS PARA ELIMINAR
+    galleryContainer.addEventListener("click", async (e) => {
+        // Comprobamos si el elemento clickeado (o su padre directo) es el botón de cierre
+        const botonCerrar = e.target.closest(".btn-close");
+        if (!botonCerrar) return; 
+
+        const imageId = botonCerrar.dataset.id;
+        const filaElemento = botonCerrar.closest(".file-row");
+
+        try {
+            console.log("Intentando eliminar imagen:", imageId);
+            await deshabilitarImagen(imageId);
+            
+            // Animación o remoción directa del DOM
+            filaElemento.remove();
+
+            // Si ya no quedan elementos en la lista, mostrar mensaje de vacío
+            if (galleryContainer.children.length === 0) {
+                mostrarMensajeVacio(galleryContainer);
+            }
+        } catch (error) {
+            console.error("Error eliminando imagen:", error);
+        }
+    });
 });

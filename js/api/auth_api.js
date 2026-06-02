@@ -28,3 +28,9 @@ export async function registrarUsuario({ nombre, apellido, correo, contraseña, 
     const data = await res.json();
     return { status: res.status, data };
 }
+
+export async function obtenerUsuarioLogueado() {
+    const res = await fetch(`${API_URL}/me`, { credentials: "include" });
+    if (!res.ok) throw new Error("No se pudo obtener el usuario");
+    return await res.json();
+}

@@ -7,6 +7,9 @@ import {
 } from "../api/image_api.js";
 
 import { initCanvas } from "../utils/image_canva.js";
+import { validarArchivo, mapearFormatosUploader } from "../utils/validaciones.js";
+import { mostrarEstado } from "../utils/mostrar_estado.js"; 
+import { mutarInterfazModoEdicion } from "../utils/reiniciar_editor.js"; 
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -14,230 +17,150 @@ document.addEventListener("DOMContentLoaded", () => {
     let tiposPermitidos = [];
     let imagenOriginalUrl = null;
 
-    const fileInput =
-        document.getElementById("fileInput");
+    // Elementos del DOM clave
+    const fileInput = document.getElementById("fileInput");
+    const textoTipos = document.getElementById("tipos-texto");
+    const bloqueInicial = document.getElementById("bloque-inicial");
+    const editorSection = document.getElementById("editor-section");
 
-    const statusMessage =
-        document.getElementById("status-message");
-
-    const bloqueInicial =
-        document.getElementById("bloque-inicial");
-
-    const textoTipos =
-        document.getElementById("tipos-texto");
-
-    const btnNuevaImagen =
-        document.getElementById("btnNuevaImagen");
-
-    const btnReiniciar =
-        document.getElementById("btnReiniciar");
-
-    const btnDescargar =
-        document.getElementById("btnDescargar");
-
-    const btnMejorar =
-        document.getElementById("btnMejorar");
-
-    const btnBrillo =
-        document.getElementById("btnBrillo");
-
-    const btnQuitarRuido =
-        document.getElementById("btnQuitarRuido");
-
-    const btnBlancoyNegro =
-        document.getElementById("btnBlancoyNegro");
-
-    const btnRestaurar =
-        document.getElementById("btnRestaurar");
-
-   const { original: canvasOriginal, result: canvasResultado } = initCanvas({
-        original: {
-            canvasId:     "canvas-original",
-            viewerId:     "viewer-original",
-            zoomSliderId: "zoom-original"
-        },
-        result: {
-            canvasId:     "canvas-resultado",
-            viewerId:     "viewer-resultado",
-            zoomSliderId: "zoom-resultado"
-        }
+    // Inicialización de Canvas
+    const { original: canvasOriginal, result: canvasResultado } = initCanvas({
+        original: { canvasId: "canvas-original", viewerId: "viewer-original", zoomSliderId: "zoom-original" },
+        result: { canvasId: "canvas-resultado", viewerId: "viewer-resultado", zoomSliderId: "zoom-resultado" }
     });
 
-    async function cargarTiposImagen() {
+    // ── CONFIGURACIÓN INICIAL ──────────────────────────────────────────
+    async function inicializarConfiguracion() {
         try {
-            const tipos = await obtener_tipoImagen();
-            tiposPermitidos = tipos;
- 
-            const extensiones = tipos.map(
-                t => "." + t.nombre_tipoimagen.toLowerCase()
-            );
-            fileInput.setAttribute("accept", extensiones.join(","));
- 
-            textoTipos.innerText =
-                "Formatos: " +
-                tipos.map(t => t.nombre_tipoimagen.toUpperCase()).join(", ");
- 
+            tiposPermitidos = await obtener_tipoImagen();
+            const { extensiones, textoInformativo } = mapearFormatosUploader(tiposPermitidos);
+            
+            fileInput.setAttribute("accept", extensiones);
+            textoTipos.innerText = textoInformativo;
         } catch (err) {
             console.error("Error al obtener tipos de imagen:", err);
         }
     }
- 
-    cargarTiposImagen();
- 
-    function validarArchivo(file) {
-        const ext = file.name.split(".").pop().toLowerCase();
-        return tiposPermitidos.some(
-            t => t.nombre_tipoimagen.toLowerCase() === ext
-        );
-    }
 
-    function restaurarModoEdicion() {
-
-    canvasResultado.limpiar();
-
-    const panelResultado =
-        document.getElementById("panel-resultado");
-
-    if (panelResultado) {
-        panelResultado.classList.add("d-none");
-    }
-
-    const sidebar =
-        document.querySelector(".tools-sidebar");
-
-    if (sidebar) {
-        sidebar.style.display = "block";
-    }
-
-    const editorViewer =
-        document.querySelector(".editor-viewer");
-
-    if (editorViewer) {
-        editorViewer.style.width = "70%";
-    }
-}
-
+    // ── PROCESAMIENTO DE ACCIONES ──────────────────────────────────────
     async function ejecutarProceso(algoritmo) {
         if (!currentImageId) {
-            statusMessage.innerText = "Primero sube una imagen";
+            mostrarEstado("Primero sube una imagen");
             return;
         }
 
-        statusMessage.innerText = "Procesando imagen...";
+        mostrarEstado("Procesando imagen...", true);
 
         try {
             const { status, data } = await procesarImagen(currentImageId, algoritmo);
-
-            console.log("Respuesta del servidor:", data);
             const idProcesamiento = data.id_procesamiento;
             
-            if (status === 200) {
-
-                if (!idProcesamiento) {
-                    console.error("No se encontró id_procesamiento:", data);
-                    statusMessage.innerText = "Error en los datos del servidor.";
-                    return;
-                }
-
-                const panelResultado = document.getElementById("panel-resultado");
-                if (panelResultado) {
-                    panelResultado.classList.remove("d-none");
-                }
-
-                const sidebar = document.querySelector(".tools-sidebar");
-                if (sidebar) {
-                    sidebar.style.display = "none";
-                }
-                const editorViewer = document.querySelector(".editor-viewer");
-                if (editorViewer) {
-                    editorViewer.style.width = "100%";
-                }
-
+            if (status === 200 && idProcesamiento) {
+                mutarInterfazModoEdicion(true); // Oculta barra lateral, expande visor a 100%
                 const resultadoUrl = getProcesamientoUrl(idProcesamiento);
 
                 requestAnimationFrame(() => {
                     setTimeout(async () => {
                         try {
                             await canvasResultado.mostrarImagen(resultadoUrl);
-                            statusMessage.innerText = "Proceso completado ✓";
+                            mostrarEstado("Proceso completado ✓");
                         } catch (canvasErr) {
                             console.error("Error al renderizar en el canvas:", canvasErr);
-                            statusMessage.innerText = "Error al mostrar el resultado.";
+                            mostrarEstado("Error al mostrar el resultado.");
                         }
                     }, 100);
                 });
 
             } else {
-                statusMessage.innerText = data.error || "Error al procesar";
+                mostrarEstado(data.error || "Error al procesar");
             }
         } catch (error) {
             console.error("Error en la petición de procesamiento:", error);
-            statusMessage.innerText = "Error al procesar";
+            mostrarEstado("Error al procesar");
         }
     }
 
-    btnNuevaImagen.addEventListener("click", () => {
-
-            restaurarModoEdicion();
-
-            fileInput.click();
-        });
-
+    // ── ESCUCHADORES DE EVENTOS (LISTENERS) ────────────────────────────
     fileInput.addEventListener("change", async (e) => {
         const file = e.target.files[0];
         if (!file) return;
- 
         fileInput.value = "";
  
-        if (!validarArchivo(file)) {
-            statusMessage.innerText = "Tipo de archivo no permitido";
+        if (!validarArchivo(file, tiposPermitidos)) {
+            mostrarEstado("Tipo de archivo no permitido");
             return;
         }
         
-        restaurarModoEdicion();
+        mutarInterfazModoEdicion(false);
 
-        statusMessage.innerText = "Subiendo imagen...";
- 
         const { status, data } = await subirImagen(file);
- 
         if (status === 200) {
-            currentImageId    = data.id;
+            currentImageId = data.id;
             imagenOriginalUrl = getImageUrl(currentImageId);
  
-            // Mostrar en canvas original
             await canvasOriginal.mostrarImagen(imagenOriginalUrl);
- 
-            // Limpiar canvas resultado
             canvasResultado.limpiar();
             
- 
-            statusMessage.innerText         = "Imagen cargada ✓";
-            bloqueInicial.style.display     = "none";
-            document.getElementById("editor-section").style.display = "flex"; // Muestra los canvas y la barra lateral
-                        
- 
+            bloqueInicial.style.display = "none";
+            editorSection.style.display = "flex"; 
         } else {
-            statusMessage.innerText = data.error || "Error al subir imagen";
+            mostrarEstado(data.error || "Error al subir imagen");
         }
     });
 
-    btnReiniciar?.addEventListener("click", () => {
-        
-        restaurarModoEdicion();
-    
+    document.getElementById("btnNuevaImagen").addEventListener("click", () => {
+        mutarInterfazModoEdicion(false);
+        fileInput.click();
+    });
+
+    document.getElementById("btnReiniciar")?.addEventListener("click", () => {
+        mutarInterfazModoEdicion(false);
         canvasOriginal.resetVista();
-        statusMessage.innerText = "Editor reiniciado";
     });
     
-    btnDescargar?.addEventListener("click", () => {
+    document.getElementById("btnDescargar")?.addEventListener("click", () => {
         canvasResultado.descargar("repixel_resultado.png");
     });
 
+    // Mapeo dinámico de algoritmos
+    const botonesAlgoritmos = {
+        "btnMejorar": "enfocar",
+        "btnBrillo": "ajustar brillo",
+        "btnQuitarRuido": "quitar ruido",
+        "btnBlancoyNegro": "blanco y negro",
+        "btnRestaurar": "restaurar imagen"
+    };
 
-    btnMejorar?.addEventListener(     "click", () => ejecutarProceso("enfocar"));
-    btnBrillo?.addEventListener(      "click", () => ejecutarProceso("ajustar brillo"));
-    btnQuitarRuido?.addEventListener( "click", () => ejecutarProceso("quitar ruido"));
-    btnBlancoyNegro?.addEventListener("click", () => ejecutarProceso("blanco y negro"));
-    btnRestaurar?.addEventListener(   "click", () => ejecutarProceso("restaurar imagen"));
- 
+    Object.entries(botonesAlgoritmos).forEach(([id, algoritmo]) => {
+        document.getElementById(id)?.addEventListener("click", () => ejecutarProceso(algoritmo));
+    });
+
+    // ── DEEP LINKING / URL ROUTING ─────────────────────────────────────
+    async function verificarImagenDesdeURL() {
+        const params = new URLSearchParams(window.location.search);
+        const idDesdeUrl = params.get("id");
+
+        if (idDesdeUrl) {
+            try {
+                currentImageId = idDesdeUrl;
+                imagenOriginalUrl = getImageUrl(currentImageId);
+
+                mutarInterfazModoEdicion(false);
+                await canvasOriginal.mostrarImagen(imagenOriginalUrl);
+                canvasResultado.limpiar();
+
+                bloqueInicial.style.display = "none";
+                editorSection.style.display = "flex";
+                
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (err) {
+                console.error("Error al cargar imagen de la URL:", err);
+                mostrarEstado("Error al recuperar la imagen seleccionada.");
+            }
+        }
+    }
+
+    // Inicializar flujos
+    inicializarConfiguracion();
+    verificarImagenDesdeURL();
 });

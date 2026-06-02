@@ -1,25 +1,22 @@
-export function validarRegistro({ nombre, apellido, correo, contraseña, confirmarContraseña }) {
-    const errores = {};
+/**
+ * Valida si la extensión del archivo está dentro de los tipos permitidos por el backend.
+ * @param {File} file 
+ * @param {Array} tiposPermitidos 
+ * @returns {boolean}
+ */
+export function validarArchivo(file, tiposPermitidos) {
+    if (!file || !tiposPermitidos.length) return false;
+    const ext = file.name.split(".").pop().toLowerCase();
+    return tiposPermitidos.some(
+        t => t.nombre_tipoimagen.toLowerCase() === ext
+    );
+}
 
-    if (!/^[a-zA-Z]+$/.test(nombre)) {
-        errores.nombre = "Nombre solo debe contener letras.";
-    }
-
-    if (!/^[a-zA-Z]+$/.test(apellido)) {
-        errores.apellido = "Apellido solo debe contener letras.";
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(correo)) {
-        errores.correo = "Correo no válido.";
-    }
-
-    if (contraseña.length < 4) {
-        errores.contraseña = "Mínimo 4 caracteres.";
-    }
-
-    if (contraseña !== confirmarContraseña) {
-        errores.confirmarContraseña = "No coinciden.";
-    }
-
-    return errores;
+/**
+ * Genera el string para el atributo 'accept' del input file y el texto informativo.
+ */
+export function mapearFormatosUploader(tipos) {
+    const extensiones = tipos.map(t => "." + t.nombre_tipoimagen.toLowerCase()).join(",");
+    const textoInformativo = "Formatos: " + tipos.map(t => t.nombre_tipoimagen.toUpperCase()).join(", ");
+    return { extensiones, textoInformativo };
 }

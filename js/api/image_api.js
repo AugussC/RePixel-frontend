@@ -57,3 +57,18 @@ export async function procesarImagen(idImagen, algoritmo) {
 export function getProcesamientoUrl(idProcesamiento) {
     return `${API_URL}/images/procesamientos/${idProcesamiento}/view`;
 }
+
+export async function obtenerImagenesUsuario(userId) {
+    const res = await fetch(`${API_URL}/users/${userId}/images`, { credentials: "include" });
+    if (!res.ok) throw new Error("Error obteniendo imágenes");
+    return await res.json();
+}
+
+export async function deshabilitarImagen(imageId) {
+    const res = await fetch(`${API_URL}/images/${imageId}/disable`, {
+        method: "PATCH",
+        credentials: "include"
+    });
+    if (!res.ok) throw new Error("No se pudo deshabilitar la imagen");
+    return res;
+}

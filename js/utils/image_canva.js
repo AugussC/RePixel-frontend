@@ -16,17 +16,15 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
     let startX   = 0;
     let startY   = 0;
 
-    // ── dibujar ──────────────────────────────────────────────────────────────
     function draw(triggerCallback = true) {
         if (!img.complete || !img.src) return;
 
         let vw = viewer.clientWidth;
         let vh = viewer.clientHeight;
 
-        // Fallback si el contenedor aún no tiene dimensiones válidas (ej. d-none o auto-sizing circular)
         if (vw === 0 || vh === 0) {
             vw = viewer.parentElement ? viewer.parentElement.clientWidth : 800;
-            vh = 600; // Alto por defecto razonable
+            vh = 600;
         }
 
         const fitScale   = Math.min(vw / img.width, vh / img.height);
@@ -41,18 +39,17 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
         ctx.clearRect(0, 0, vw, vh);
         ctx.imageSmoothingEnabled = false;
 
-        // centrar + offset de arrastre
         const x = (vw - drawW) / 2 + offsetX;
         const y = (vh - drawH) / 2 + offsetY;
 
         ctx.drawImage(img, x, y, drawW, drawH);
 
-        // grilla de píxeles cuando hay mucho zoom
+        // Dibujar grilla de píxeles decorativa de la UI
         if (finalScale > 5) {
             ctx.beginPath();
             ctx.strokeStyle = "rgba(255,255,255,0.25)";
             ctx.lineWidth   = 0.5;
-            for (let px = 0; px <= img.width;  px++) {
+            for (let px = 0; px <= img.width; px++) {
                 ctx.moveTo(x + px * finalScale, y);
                 ctx.lineTo(x + px * finalScale, y + drawH);
             }
@@ -63,19 +60,17 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
             ctx.stroke();
         }
 
-        // Notificar transformación si es necesario
         if (triggerCallback && onTransform) {
             onTransform({ scale, offsetX, offsetY });
         }
     }
 
-    // ── zoom slider ───────────────────────────────────────────────────────────
+    // ── LISTENERS DE CONTROL PRINCIPALES ─────────────────────────────────────
     zoomSlider?.addEventListener("input", () => {
         scale = parseFloat(zoomSlider.value);
         draw();
     });
 
-    // ── zoom rueda ────────────────────────────────────────────────────────────
     viewer.addEventListener("wheel", (e) => {
         e.preventDefault();
         scale += e.deltaY < 0 ? 0.2 : -0.2;
@@ -84,7 +79,6 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
         draw();
     }, { passive: false });
 
-    // ── arrastre mouse ────────────────────────────────────────────────────────
     canvas.addEventListener("mousedown", (e) => {
         dragging = true;
         startX   = e.clientX - offsetX;
@@ -92,21 +86,25 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
         canvas.style.cursor = "grabbing";
     });
 
-    window.addEventListener("mousemove", (e) => {
+    // Eventos globales acotados a la instancia del visor activo
+    const handleMouseMove = (e) => {
         if (!dragging) return;
         offsetX = e.clientX - startX;
         offsetY = e.clientY - startY;
         draw();
-    });
+    };
 
-    window.addEventListener("mouseup", () => {
+    const handleMouseUp = () => {
         if (dragging) {
             dragging = false;
             canvas.style.cursor = "grab";
         }
-    });
+    };
 
-    // ── touch (móvil) ─────────────────────────────────────────────────────────
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    // ── TOUCH (MÓVIL) ─────────────────────────────────────────────────────────
     let lastTouchDist = null;
 
     canvas.addEventListener("touchstart", (e) => {
@@ -118,12 +116,13 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
     }, { passive: true });
 
     canvas.addEventListener("touchmove", (e) => {
-        e.preventDefault();
         if (e.touches.length === 1 && dragging) {
+            e.preventDefault();
             offsetX = e.touches[0].clientX - startX;
             offsetY = e.touches[0].clientY - startY;
             draw();
         } else if (e.touches.length === 2) {
+            e.preventDefault();
             const dist = Math.hypot(
                 e.touches[0].clientX - e.touches[1].clientX,
                 e.touches[0].clientY - e.touches[1].clientY
@@ -145,15 +144,14 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
 
     canvas.style.cursor = "grab";
 
-    // ── API pública ───────────────────────────────────────────────────────────
+    // ── API PÚBLICA REVELADA ──────────────────────────────────────────────────
     return {
-
         async mostrarImagen(src) {
             const res  = await fetch(src, { credentials: "include" });
             const blob = await res.blob();
             const url  = URL.createObjectURL(blob);
 
-            img     = new Image();
+            img = new Image();
             img.src = url;
             img.onload = () => {
                 scale   = 1;
@@ -171,6 +169,9 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
             img    = new Image();
             scale  = 1;
             offsetX = offsetY = 0;
+            // Limpieza de listeners globales en memoria para evitar memory leaks
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
         },
 
         resetVista() {
@@ -181,33 +182,44 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
             draw();
         },
 
-        descargar(nombre = "imagen.png") {
-            if (!canvas.width) return;
-            const link    = document.createElement("a");
+        /**
+         * CORRECCIÓN: Renderiza la imagen original 1:1 en un canvas oculto
+         * para exportarla limpia de grillas y con su resolución verdadera.
+         */
+        descargar(nombre = "repixel_resultado.png") {
+            if (!img.complete || !img.src) return;
+
+            const offscreenCanvas = document.createElement("canvas");
+            offscreenCanvas.width = img.width;
+            offscreenCanvas.height = img.height;
+            
+            const offscreenCtx = offscreenCanvas.getContext("2d");
+            offscreenCtx.drawImage(img, 0, 0);
+
+            const link = document.createElement("a");
             link.download = nombre;
-            link.href     = canvas.toDataURL("image/png");
+            link.href = offscreenCanvas.toDataURL("image/png");
             link.click();
+            
+            offscreenCanvas.remove(); // Remoción explícita
         },
 
-        // Permite actualizar externamente la transformación para sincronización sin bucles infinitos
         setTransform(newScale, newOffsetX, newOffsetY) {
             scale   = newScale;
             offsetX = newOffsetX;
             offsetY = newOffsetY;
             if (zoomSlider) zoomSlider.value = scale;
-            draw(false); // Falso para no re-disparar el callback recursivamente
+            draw(false); 
         }
     };
 }
 
-// ── export: acepta configuración dual (original + resultado) ─────────────────
+// ── EXPORTACIÓN CENTRALIZADA ─────────────────────────────────────────────────
 export function initCanvas(config) {
-
-    // Compatibilidad con la firma legacy: initCanvas(canvasId, viewerId, zoomId)
+    // Mantener compatibilidad legacy de firmas de argumentos
     if (typeof config === "string") {
         const [canvasId, viewerId, zoomSliderId] = arguments;
         const original = crearVisor({ canvasId, viewerId, zoomSliderId });
-        // Exponer la misma API que antes
         return {
             mostrarImagen: (src) => original.mostrarImagen(src),
             limpiar:       ()    => original.limpiar(),
@@ -217,23 +229,16 @@ export function initCanvas(config) {
         };
     }
 
-    // Nueva firma: initCanvas({ original: {...}, result: {...} })
     let original, result;
-
     const originalConfig = { ...config.original };
     const resultConfig = config.result ? { ...config.result } : null;
 
-    // Si existen ambos canvas, sincronizamos la transformación (zoom y arrastre) automáticamente
     if (resultConfig) {
         originalConfig.onTransform = (coords) => {
-            if (result) {
-                result.setTransform(coords.scale, coords.offsetX, coords.offsetY);
-            }
+            if (result) result.setTransform(coords.scale, coords.offsetX, coords.offsetY);
         };
         resultConfig.onTransform = (coords) => {
-            if (original) {
-                original.setTransform(coords.scale, coords.offsetX, coords.offsetY);
-            }
+            if (original) original.setTransform(coords.scale, coords.offsetX, coords.offsetY);
         };
     }
 
