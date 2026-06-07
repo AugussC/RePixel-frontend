@@ -25,12 +25,3 @@ export function validarRegistro({ nombre, apellido, correo, contraseña, confirm
 }
 
 
-// Request al backend
-export async function registrarUsuario({ nombre, apellido, correo, contraseña, rol }) {
-    const res = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, apellido, correo, contraseña, rol })
-    });
-    return res.json().then(data => ({ status: res.status, data }));
-}

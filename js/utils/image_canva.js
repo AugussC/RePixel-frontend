@@ -1,5 +1,6 @@
 // image_canva.js
 // Crea visores de canvas con zoom, pan con mouse y grilla de píxeles
+import { descargarCanvas, crearCanvasTemporal } from "./descargar.js";
 
 function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
 
@@ -187,21 +188,14 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
          * para exportarla limpia de grillas y con su resolución verdadera.
          */
         descargar(nombre = "repixel_resultado.png") {
+
             if (!img.complete || !img.src) return;
 
-            const offscreenCanvas = document.createElement("canvas");
-            offscreenCanvas.width = img.width;
-            offscreenCanvas.height = img.height;
-            
-            const offscreenCtx = offscreenCanvas.getContext("2d");
-            offscreenCtx.drawImage(img, 0, 0);
+            const canvasTemporal = crearCanvasTemporal(img);
 
-            const link = document.createElement("a");
-            link.download = nombre;
-            link.href = offscreenCanvas.toDataURL("image/png");
-            link.click();
-            
-            offscreenCanvas.remove(); // Remoción explícita
+            descargarCanvas(canvasTemporal, nombre);
+
+            canvasTemporal.remove();
         },
 
         setTransform(newScale, newOffsetX, newOffsetY) {

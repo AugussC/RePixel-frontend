@@ -121,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnDescargar")?.addEventListener("click", () => {
         canvasResultado.descargar("repixel_resultado.png");
     });
+    
 
     // Mapeo dinámico de algoritmos
     const botonesAlgoritmos = {

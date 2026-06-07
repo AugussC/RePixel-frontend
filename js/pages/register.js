@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // 3. Petición de registro al servidor
         const { status, data } = await registrarUsuario({
             ...datos,
-            rol: 2
+            rol: 1
         });
 
         if (status === 201) {
