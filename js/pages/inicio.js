@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnReiniciar")?.addEventListener("click", () => {
         mutarInterfazModoEdicion(false);
         canvasOriginal.resetVista();
+        canvasResultado.limpiar();
     });
     
     document.getElementById("btnDescargar")?.addEventListener("click", () => {

@@ -4,6 +4,11 @@ export function mutarInterfazModoEdicion(verResultado = false) {
     const editorViewer = document.querySelector(".editor-viewer");
     const editorStatusLocal = document.getElementById("editor-status");
     const statusMessageLocal = document.getElementById("status-message");
+    const btnDescargar = document.getElementById("btnDescargar");
+
+    if (btnDescargar) {
+        btnDescargar.disabled = !verResultado;
+    }
 
     if (verResultado) {
         if (panelResultado) panelResultado.classList.remove("d-none");
