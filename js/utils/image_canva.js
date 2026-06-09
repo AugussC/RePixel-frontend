@@ -1,6 +1,4 @@
-// image_canva.js
-// Crea visores de canvas con zoom, pan con mouse y grilla de píxeles
-import { descargarCanvas, crearCanvasTemporal } from "./descargar.js";
+
 
 function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
 
@@ -183,21 +181,6 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
             draw();
         },
 
-        /**
-         * CORRECCIÓN: Renderiza la imagen original 1:1 en un canvas oculto
-         * para exportarla limpia de grillas y con su resolución verdadera.
-         */
-        descargar(nombre = "repixel_resultado.png") {
-
-            if (!img.complete || !img.src) return;
-
-            const canvasTemporal = crearCanvasTemporal(img);
-
-            descargarCanvas(canvasTemporal, nombre);
-
-            canvasTemporal.remove();
-        },
-
         setTransform(newScale, newOffsetX, newOffsetY) {
             scale   = newScale;
             offsetX = newOffsetX;
@@ -208,7 +191,6 @@ function crearVisor({ canvasId, viewerId, zoomSliderId, onTransform }) {
     };
 }
 
-// ── EXPORTACIÓN CENTRALIZADA ─────────────────────────────────────────────────
 export function initCanvas(config) {
     // Mantener compatibilidad legacy de firmas de argumentos
     if (typeof config === "string") {
@@ -217,7 +199,6 @@ export function initCanvas(config) {
         return {
             mostrarImagen: (src) => original.mostrarImagen(src),
             limpiar:       ()    => original.limpiar(),
-            descargar:     (n)   => original.descargar(n),
             original,
             result: null
         };

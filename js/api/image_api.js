@@ -72,3 +72,7 @@ export async function deshabilitarImagen(imageId) {
     if (!res.ok) throw new Error("No se pudo deshabilitar la imagen");
     return res;
 }
+
+export function getDescargaUrl(idProcesamiento) {
+    return `${API_URL}/images/procesamientos/${idProcesamiento}/descargar`;
+}

@@ -3,7 +3,8 @@ import {
     getImageUrl,
     obtener_tipoImagen,
     procesarImagen,
-    getProcesamientoUrl
+    getProcesamientoUrl,
+    getDescargaUrl
 } from "../api/image_api.js";
 
 import { initCanvas } from "../utils/image_canva.js";
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentImageId = null;
     let tiposPermitidos = [];
     let imagenOriginalUrl = null;
+    let currentProcesamientoId = null;
 
     // Elementos del DOM clave
     const fileInput = document.getElementById("fileInput");
@@ -54,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const { status, data } = await procesarImagen(currentImageId, algoritmo);
             const idProcesamiento = data.id_procesamiento;
-            
+            currentProcesamientoId = idProcesamiento;
             if (status === 200 && idProcesamiento) {
                 mutarInterfazModoEdicion(true); // Oculta barra lateral, expande visor a 100%
                 const resultadoUrl = getProcesamientoUrl(idProcesamiento);
@@ -119,8 +121,18 @@ document.addEventListener("DOMContentLoaded", () => {
         canvasResultado.limpiar();
     });
     
-    document.getElementById("btnDescargar")?.addEventListener("click", () => {
-        canvasResultado.descargar("repixel_resultado.png");
+    document.getElementById("btnDescargar")?.addEventListener("click", async () => {
+    if (!currentProcesamientoId ) return;
+
+        const res = await fetch(getDescargaUrl(currentProcesamientoId ), { credentials: "include" });
+        if (!res.ok) return alert("Error al descargar la imagen");
+
+        const blob = await res.blob();
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "repixel_resultado.png";
+        link.click();
+        URL.revokeObjectURL(link.href);
     });
     
 
