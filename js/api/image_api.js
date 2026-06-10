@@ -32,31 +32,6 @@ export async function obtener_tipoImagen() {
     return await res.json();
 }
 
-export async function procesarImagen(idImagen, algoritmo) {
-    const res = await fetch(
-        `${API_URL}/images/procesar-imagen/${idImagen}`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify({
-                algoritmo
-            })
-        }
-    );
-
-    const data = await res.json();
-
-    return {
-        status: res.status,
-        data
-    };
-}
-export function getProcesamientoUrl(idProcesamiento) {
-    return `${API_URL}/images/procesamientos/${idProcesamiento}/view`;
-}
 
 export async function obtenerImagenesUsuario(userId) {
     const res = await fetch(`${API_URL}/users/${userId}/images`, { credentials: "include" });
@@ -73,6 +48,3 @@ export async function deshabilitarImagen(imageId) {
     return res;
 }
 
-export function getDescargaUrl(idProcesamiento) {
-    return `${API_URL}/images/procesamientos/${idProcesamiento}/descargar`;
-}

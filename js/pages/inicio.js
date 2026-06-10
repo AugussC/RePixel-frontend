@@ -1,11 +1,5 @@
-import {
-    subirImagen,
-    getImageUrl,
-    obtener_tipoImagen,
-    procesarImagen,
-    getProcesamientoUrl,
-    getDescargaUrl
-} from "../api/image_api.js";
+import {subirImagen,getImageUrl,obtener_tipoImagen} from "../api/image_api.js";
+import {procesarImagen,getProcesamientoUrl,getDescargaUrl} from "../api/procesamiento_api.js";
 
 import { initCanvas } from "../utils/image_canva.js";
 import { validarArchivo, mapearFormatosUploader } from "../utils/validaciones.js";
